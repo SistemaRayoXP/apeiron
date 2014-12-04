@@ -1,0 +1,1 @@
+java -Xmx512m -cp lib\jRegistryKey.jar;lib\commons-beanutils.jar;lib\commons-collections-3.2.1.jar;lib\commons-digester-1.8.jar;lib\commons-logging-1.1.1.jar;lib\itext-1.3.1.jar;lib\jasperreports-3.0.0.jar;lib\poi-3.0.1-FINAL-20070705.jar;apeiron.jar gui.Principal
