@@ -64,8 +64,8 @@
 
 	<target name="createRelease" depends="jar">
 		<zip basedir="release/bin" destfile="release/installer/apeiron.zip" includes="**/*.jar,**/*.dll,**/*.bat" />
-		<nsis script="release/loader/makeApeironLoader.nsi" />
-		<nsis script="release/makeApeironInstaller.nsi" />
+		<!--<nsis script="release/loader/makeApeironLoader.nsi" />
+		<nsis script="release/makeApeironInstaller.nsi" />-->
 	</target>
 
 </project>
