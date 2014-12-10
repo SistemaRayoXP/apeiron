@@ -61,11 +61,32 @@
 			</manifest>
 		</jar>
 	</target>
-
-	<target name="createRelease" depends="jar">
+	
+	<target name="run_jar">
+        <jar destfile="release/installer/apeiron.jar" filesetmanifest="mergewithoutmain">
+            <manifest>
+                <attribute name="Main-Class" value="gui.Principal"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+            <fileset dir="build"/>
+            <zipfileset excludes="META-INF/*.SF" src="lib/commons-digester-1.8.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="lib/commons-collections-3.2.1.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="lib/commons-logging-1.1.1.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="lib/commons-beanutils.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="lib/itext-1.3.1.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="lib/poi-3.0.1-FINAL-20070705.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="lib/jasperreports-3.0.0.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="lib/jRegistryKey.jar"/>
+        </jar>
+    </target>
+	
+	<target name="zip_file">
 		<zip basedir="release/bin" destfile="release/installer/apeiron.zip" includes="**/*.jar,**/*.dll,**/*.bat" />
-		<!--<nsis script="release/loader/makeApeironLoader.nsi" />
-		<nsis script="release/makeApeironInstaller.nsi" />-->
 	</target>
-
+	
+	<target name="createInstaller">
+			<nsis script="release/makeApeironInstaller.nsi" />	
+	</target>
+	
+	<target name="createRelease" depends="jar, run_jar, zip_file, createInstaller"/>
 </project>
