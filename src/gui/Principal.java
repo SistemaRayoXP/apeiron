@@ -22,7 +22,7 @@ import combinacion.PrimeroElMejor;
 public class Principal extends JFrame implements CatalogoListener
 {
 	static final long serialVersionUID = 1;
-	public static final double version = 2.7;
+	public static final double version = 2.8;
 
 	AdDatos datos;
 	Descargas descargas;

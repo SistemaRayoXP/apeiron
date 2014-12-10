@@ -24,7 +24,7 @@ public class LectorSiiau extends LectorHtml implements LectorHtmlListener{
 	}
 	
 	public LectorSiiau(MateriaSiiau f) {
-		super("http://iasv2.siiau.udg.mx/wco/sspseca.consulta_oferta?ciclop="+
+		super("http://t09.siiau.udg.mx/wco/sspseca.consulta_oferta?ciclop="+
 				f.getCal()+"&cup="+f.getCentro()+"&crsep="+f.getClave());
 		super.setLectorHtmlListener(this);
 		registros=new Vector(10,10);

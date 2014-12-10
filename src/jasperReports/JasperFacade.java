@@ -34,6 +34,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.Executor;
 
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -349,6 +350,31 @@ public class JasperFacade
 		{
 			
 			return null;
+		}
+
+		public void abort(Executor executor) throws SQLException
+		{
+			
+		}
+
+		public int getNetworkTimeout() throws SQLException
+		{
+			return 0;
+		}
+
+		public String getSchema() throws SQLException
+		{
+			return null;
+		}
+
+		public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException
+		{
+			
+		}
+
+		public void setSchema(String schema) throws SQLException
+		{
+			
 		}
 	}
 
@@ -939,6 +965,16 @@ public class JasperFacade
 		{
 			
 			return null;
+		}
+
+		public void closeOnCompletion() throws SQLException
+		{
+			
+		}
+
+		public boolean isCloseOnCompletion() throws SQLException
+		{
+			return false;
 		}
 	}
 
@@ -2088,6 +2124,16 @@ public class JasperFacade
 		public <T> T unwrap(Class<T> iface) throws SQLException
 		{
 			
+			return null;
+		}
+
+		public <T> T getObject(int arg0, Class<T> arg1) throws SQLException
+		{
+			return null;
+		}
+
+		public <T> T getObject(String arg0, Class<T> arg1) throws SQLException
+		{
 			return null;
 		}
 
