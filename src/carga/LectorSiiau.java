@@ -1,7 +1,7 @@
 package carga;
 
 import java.util.Vector;
-
+import static util.Constants.*;
 
 public class LectorSiiau extends LectorHtml implements LectorHtmlListener{
 	private MateriaSiiau f;
@@ -24,7 +24,7 @@ public class LectorSiiau extends LectorHtml implements LectorHtmlListener{
 	}
 	
 	public LectorSiiau(MateriaSiiau f) {
-		super("http://consulta.siiau.udg.mx/wco/sspseca.consulta_oferta?ciclop="+
+		super(SIIAU_SERVER+"/wco/sspseca.consulta_oferta?ciclop="+
 				f.getCal()+"&cup="+f.getCentro()+"&crsep="+f.getClave());
 		super.setLectorHtmlListener(this);
 		registros=new Vector(10,10);

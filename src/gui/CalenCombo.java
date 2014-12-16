@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import static util.Constants.*;
 
 import javax.swing.JComboBox;
 
@@ -59,7 +60,7 @@ public class CalenCombo extends JComboBox
 	private static Cal[] buscarCalendarios() throws IOException
 	{
 		ArrayList<Cal> calendarios = new ArrayList<Cal>();
-		LectorHttp lector = new LectorHttp("http://consulta.siiau.udg.mx/wco/sspseca.forma_consulta");
+		LectorHttp lector = new LectorHttp(SIIAU_SERVER+"/wco/sspseca.forma_consulta");
 		String html = lector.getHtml();
 		Pattern selectPattern = Pattern.compile("(?s)(?i)<select(.*?)>(.*?)</select>");
 		Pattern optionPattern = Pattern.compile("(?i)<option(.*?)value=\"(.*?)\">(.*)");

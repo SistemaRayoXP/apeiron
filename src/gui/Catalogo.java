@@ -172,7 +172,7 @@ public class Catalogo extends JInternalFrame {
 =Catalogo.class.getResourceAsStream(centro.toString()+".dat");
 
   	 	       String cad=null;
-  		       BufferedReader ent=new BufferedReader(new InputStreamReader(is));
+  		       BufferedReader ent=new BufferedReader(new InputStreamReader(is,"UTF-8"));
                strs = new Vector(3000, 20);
 		       int i=0;
 

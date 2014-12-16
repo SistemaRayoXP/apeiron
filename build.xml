@@ -31,6 +31,7 @@
 			</fileset>
 		</classpath>
 	</taskdef>
+	
 	<target name="clean">
 		<delete dir="build" />
 	</target>
@@ -38,7 +39,7 @@
 	<target name="compileReports">
 		<jrc srcdir="src/jasperReports" destdir="src/jasperReports" includes="*.jrxml" />
 	</target>
-
+	
 	<target name="copyFiles" depends="compileReports">
 		<mkdir dir="build" />
 		<copy includeemptydirs="false" todir="build">
@@ -46,15 +47,22 @@
 		</copy>
 	</target>
 
-	<target depends="copyFiles" name="build">
+	<target name="build" depends="copyFiles">
 		<echo message="${ant.project.name}: ${ant.file}" />
 		<javac debug="true" debuglevel="${debuglevel}" destdir="build" source="${source}" target="${target}">
 			<src path="src" />
 			<classpath refid="apeiron.classpath" />
 		</javac>
 	</target>
+	
+	<target name="actualizarCatalogos">
+		<java fork="true" failonerror="yes" classname="util.GeneradorCatalogo" classpathref="apeiron.classpath"/>
+		<copy includeemptydirs="false" todir="build">
+			<fileset dir="src" includes="**/*.dat"/>
+		</copy>
+	</target>
 
-	<target name="jar" depends="build">
+	<target name="jar" depends="clean, build, actualizarCatalogos">
 		<jar basedir="build" destfile="release/bin/apeiron.jar">
 			<manifest>
 				<attribute name="Main-Class" value="gui.Principal" />
@@ -62,7 +70,7 @@
 		</jar>
 	</target>
 	
-	<target name="run_jar">
+	<target name="run_jar" depends="clean, build, actualizarCatalogos">
         <jar destfile="release/installer/apeiron.jar" filesetmanifest="mergewithoutmain">
             <manifest>
                 <attribute name="Main-Class" value="gui.Principal"/>
@@ -80,7 +88,7 @@
         </jar>
     </target>
 	
-	<target name="zip_file">
+	<target name="zip_file" depends="clean, build, actualizarCatalogos">
 		<zip basedir="release/bin" destfile="release/installer/apeiron.zip" includes="**/*.jar,**/*.dll,**/*.bat" />
 	</target>
 	
