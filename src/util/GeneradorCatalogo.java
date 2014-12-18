@@ -11,24 +11,65 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import ca.beq.util.win32.registry.RegistryKey;
 import carga.LectorHttp;
 
 public class GeneradorCatalogo
 {
 	private static class RegistroCatalogo implements Comparable<RegistroCatalogo>
 	{
-		String departamento;
-		String clave;
-		String nombre;
+		private String departamento;
+		private String clave;
+		private String nombre;
 		
 		public RegistroCatalogo(String line)
 		{
-			String parts[]=line.split(",");
+			List<String> parts=parseLine(line);
 			
-			departamento=parts[0];
-			clave=parts[2].replaceAll("\"","");
-			nombre=parts[3].replaceAll("\"","").replaceAll("~","Ñ");
+			departamento=parts.get(0);
+			clave=parts.get(2);
+			nombre=parts.get(3).replaceAll("~","Ñ");
+		}
+		
+		/**
+		 * No se puede hacer un simple split(",") porque los elementos de las lineas pueden
+		 * abrir comillas y poner comas adentro.
+		 * 
+		 * @param line
+		 * @return
+		 */
+		private List<String> parseLine(String line)
+		{
+			char lineChars[]=line.toCharArray();
+			
+			boolean insideQuotes=false;
+			StringBuilder sb=new StringBuilder();
+			List<String> lineElements=new ArrayList<String>();
+			
+			for (char element:lineChars)
+			{
+				if (element=='"')
+				{
+					insideQuotes=!insideQuotes;
+					continue;
+				}
+				else if (element==',' && !insideQuotes)
+				{
+					lineElements.add(sb.toString().trim());
+					sb.setLength(0);
+					continue;
+				}
+				else
+				{
+					sb.append(element);
+				}
+			}
+			
+			if (sb.length()>0)
+			{
+				lineElements.add(sb.toString().trim());
+			}
+			
+			return lineElements;
 		}
 
 		public int compareTo(RegistroCatalogo o)
