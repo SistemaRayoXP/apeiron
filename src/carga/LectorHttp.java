@@ -1,5 +1,6 @@
 package carga;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.NoRouteToHostException;
@@ -18,6 +19,8 @@ public class LectorHttp extends Thread
 	private String html;
 	private LectorHttpListener eventos;
 	private boolean abortar;
+	private static boolean disableProxyResolution=false;
+	private static Object lock=new Object();
 
 	public LectorHttp(String url)
 	{
@@ -48,76 +51,91 @@ public class LectorHttp extends Thread
 
 	protected void inicializarProxy()
 	{
-		if (System.getProperty("http.proxyHost")==null)
+		synchronized (lock)
 		{
-			String proxyHost=null;
-			String proxyPort=null;
-			boolean proxyEnabled=false;		
-			
-			RegistryKey r = new RegistryKey(RootKey.HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings");
-			
-			if(r.hasValue("ProxyEnable")) 
+			if (!disableProxyResolution)
 			{
-				RegistryValue v = r.getValue("ProxyEnable");
-				proxyEnabled=!"0".equals(v.getStringValue());
-			}
-			
-			if(proxyEnabled && r.hasValue("ProxyServer")) 
-			{
-				RegistryValue v = r.getValue("ProxyServer");
-				String proxyServer=v.getStringValue();
-				int pos=proxyServer.indexOf(":");
-				if (pos>-1)
+				try
 				{
-					proxyHost=proxyServer.substring(0,pos);
-					proxyPort=proxyServer.substring(pos+1,proxyServer.length());
-				}
+					if (System.getProperty("http.proxyHost")==null)
+					{
+						String proxyHost=null;
+						String proxyPort=null;
+						boolean proxyEnabled=false;		
+						
+						RegistryKey r = new RegistryKey(RootKey.HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings");
+						
+						if(r.hasValue("ProxyEnable")) 
+						{
+							RegistryValue v = r.getValue("ProxyEnable");
+							proxyEnabled=!"0".equals(v.getStringValue());
+						}
+						
+						if(proxyEnabled && r.hasValue("ProxyServer")) 
+						{
+							RegistryValue v = r.getValue("ProxyServer");
+							String proxyServer=v.getStringValue();
+							int pos=proxyServer.indexOf(":");
+							if (pos>-1)
+							{
+								proxyHost=proxyServer.substring(0,pos);
+								proxyPort=proxyServer.substring(pos+1,proxyServer.length());
+							}
 
-				System.setProperty("http.proxyHost",proxyHost);
-				System.setProperty("http.proxyPort",proxyPort);
+							System.setProperty("http.proxyHost",proxyHost);
+							System.setProperty("http.proxyPort",proxyPort);
+						}
+					}
+				}
+				catch (Throwable e)
+				{
+					System.out.println("WARNING: Could not load JRegistryKey, proxy resolution disabled");
+					disableProxyResolution=true;
+				}
 			}
 		}
 	}
 	
 	protected synchronized void fillHtml() throws IOException
 	{
-		try
-		{
-			inicializarProxy();
-		}
-		catch (Throwable e)
-		{
-			e.printStackTrace();
-		}
+		inicializarProxy();
+		
+		byte buffer[] = new byte[1024 * 9];
+		ByteArrayOutputStream outputBytes=new ByteArrayOutputStream();
 		
 		URL u1 = new URL(url);
 		URLConnection uc = u1.openConnection();
-
 		InputStream is = uc.getInputStream();
-		byte buffer[];
-
-		if (uc.getContentLength() > -1)
-			buffer = new byte[uc.getContentLength()];
-		else
-			buffer = new byte[1024 * 500];
-
+		int contentLength=uc.getContentLength();
 		int res;
 		int pos = 0;
-		int completado;
 
 		do
 		{
-			res = is.read(buffer, pos, buffer.length - pos);
-			if (res > -1)
-				pos += res;
-			completado = (pos + 1) * 100 / buffer.length;
+			res = is.read(buffer);
+			
+			if (res>-1)
+			{
+				outputBytes.write(buffer,0,res);
+				pos+=res;
+			}
+			
+			if (contentLength>-1)
+			{
+				int completado = (pos + 1) * 100 / contentLength;
 
-			if (eventos != null)
-				eventos.progreso("Descargando desde " + url + " :", completado);
+				if (eventos != null)
+					eventos.progreso("Descargando desde " + url + " :", completado);
+			}
 		}
 		while (res > -1 && !abortar);
-
-		html = new String(buffer, 0, pos);
+		
+		outputBytes.flush();
+		outputBytes.close();
+		
+		is.close();
+		
+		html = new String(outputBytes.toByteArray());
 
 		if (eventos != null && !abortar)
 			eventos.terminado(html);
