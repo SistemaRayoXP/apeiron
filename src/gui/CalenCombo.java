@@ -2,8 +2,10 @@ package gui;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import static util.Constants.*;
 
 import javax.swing.JComboBox;
@@ -63,7 +65,7 @@ public class CalenCombo extends JComboBox
 		LectorHttp lector = new LectorHttp(SIIAU_SERVER+"/wco/sspseca.forma_consulta");
 		String html = lector.getHtml();
 		Pattern selectPattern = Pattern.compile("(?s)(?i)<select(.*?)>(.*?)</select>");
-		Pattern optionPattern = Pattern.compile("(?i)<option(.*?)value=\"(.*?)\">(.*)");
+		Pattern optionPattern = Pattern.compile("(?i)<option(.*?)value='(.*?)'>(.*)");
 
 		Matcher matcher = selectPattern.matcher(html);
 		if (matcher.find())
@@ -83,5 +85,12 @@ public class CalenCombo extends JComboBox
 			}
 		}
 		return calendarios.toArray(new Cal[calendarios.size()]);
+	}
+	
+	public static void main(String[] args) throws Exception
+	{
+		Cal res[]=buscarCalendarios();
+		
+		System.out.println(Arrays.toString(res));
 	}
 }

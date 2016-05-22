@@ -4,6 +4,8 @@
 	<property name="debuglevel" value="source,lines,vars" />
 	<property name="target" value="1.7" />
 	<property name="source" value="1.7" />
+	<property name="launch4j.dir" location="C:/Program Files (x86)/Launch4j" />
+	
 	<path id="apeiron.classpath">
 		<pathelement location="build" />
 		<pathelement location="lib/commons-digester-1.8.jar" />
@@ -23,6 +25,11 @@
 			</fileset>
 		</classpath>
 	</taskdef>
+	
+	<taskdef name="launch4j"
+	    classname="net.sf.launch4j.ant.Launch4jTask"
+	    classpath="${launch4j.dir}/launch4j.jar
+	        :${launch4j.dir}/lib/xstream.jar" />
 
 	<taskdef name="jrc" classname="net.sf.jasperreports.ant.JRAntCompileTask">
 		<classpath>
@@ -92,9 +99,14 @@
 		<zip basedir="release/bin" destfile="release/installer/apeiron.zip" includes="**/*.jar,**/*.dll,**/*.bat" />
 	</target>
 	
-	<target name="createInstaller">
-			<nsis script="release/makeApeironInstaller.nsi" />	
+	<target name="createStandAlone">
+		<launch4j configFile="release/launch4j-standalone.xml" />
 	</target>
 	
-	<target name="createRelease" depends="jar, run_jar, zip_file, createInstaller"/>
+	<!--
+	<target name="createInstaller">
+			<nsis script="release/makeApeironInstaller.nsi" />	
+	</target>-->
+	
+	<target name="createRelease" depends="jar, run_jar, zip_file, createStandAlone"/>
 </project>
