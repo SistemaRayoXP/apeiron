@@ -1,6 +1,7 @@
 package combinacion;
 
 public interface ModCombListener {
-	void progreso(String estado,int porcentaje);
-	void nuevaSolucion(Solucion s);
+    void progreso(String estado, int porcentaje);
+
+    void nuevaSolucion(Solucion s);
 }

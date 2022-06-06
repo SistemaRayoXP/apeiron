@@ -19,114 +19,111 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-public class ChkVersion extends JInternalFrame implements Runnable,IMostrarMensaje {
-	private static final long serialVersionUID = 5312929606165125506L;
-	
-	JLabel lblEstado;
-	JTextArea txtTexto;
-	StringBuffer texto;
-	JButton btnActualizar;
-	JButton btnReintentar;
-	private ChkVersion instancia;
-	
-	public ChkVersion(){
-		super("Buscar Actualizaciones");
-		instancia=this;
-		setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
-	    setResizable(true);
-	    setMaximizable(true);
-		setClosable(true);
-		
-		btnActualizar=new JButton("Actualizar");
-		btnActualizar.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent arg0) {
-				try
-            {
-	            BrowserLauncher.openURL("http://apeiron.sourceforge.net");
+public class ChkVersion extends JInternalFrame implements Runnable, IMostrarMensaje {
+    private static final long serialVersionUID = 5312929606165125506L;
+
+    JLabel lblEstado;
+    JTextArea txtTexto;
+    StringBuffer texto;
+    JButton btnActualizar;
+    JButton btnReintentar;
+    private ChkVersion instancia;
+
+    public ChkVersion() {
+        super("Buscar Actualizaciones");
+        instancia = this;
+        setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
+        setResizable(true);
+        setMaximizable(true);
+        setClosable(true);
+
+        btnActualizar = new JButton("Actualizar");
+        btnActualizar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                try {
+                    BrowserLauncher.openURL("http://apeiron.sourceforge.net");
+                } catch (IOException e) {
+                    // Nothing to do here
+                    e.printStackTrace();
+                }
             }
-            catch (IOException e)
-            {
-	            // Nothing to do here
-	            e.printStackTrace();
+        });
+
+        btnReintentar = new JButton("Obtener Información");
+        btnReintentar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                empezar();
             }
-			}
-		});
-		
-		btnReintentar=new JButton("Obtener Información");
-		btnReintentar.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e) {
-				empezar();
-			}
-		});
-		
-		btnActualizar.setEnabled(false);
-			
-		lblEstado=new JLabel("");
-		texto=new StringBuffer();
-		txtTexto=new JTextArea();
-		txtTexto.setEditable(false);
-		
-		
-		JPanel panel=new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		panel.add(btnReintentar);
-		panel.add(btnActualizar);
-		
-		getContentPane().add(panel,"North");
-		getContentPane().add(new JScrollPane(txtTexto));
-		getContentPane().add(lblEstado,"South");
-		
-		setSize(380,200);
-		
-		empezar();
-	}
-	
-	public void mostrar(String msg) {
-		lblEstado.setText(msg);
-	}
-	
-	protected void empezar(){
-		new Thread(this).start();
-	}
-	protected synchronized void escribir(String s){
-		texto.append(s);
-		txtTexto.setText(texto+"");
-		txtTexto.setSelectionStart(texto.length());
-	}
-	
-	public void run() {
-		btnReintentar.setEnabled(false);
-		try {
-			lblEstado.setText("Conectando con servidor...");
-			escribir("\nConectando con servidor...");
-			URL url=new URL("http://apeiron.sourceforge.net/version.php");
-			lblEstado.setText("Obteniendo información de versión...");
-			escribir("Ok\n");
-			escribir("Obteniendo información sobre última versión...");
-			
-			BufferedReader br=new BufferedReader(new InputStreamReader(url.openStream()));
-			String linea=br.readLine();
-			escribir("Ok\n");
-			
-			if (linea!=null){
-				escribir("Versión mas reciente: "+linea+"\n");
-				if (Principal.version<Double.parseDouble(linea)){ //Hay nueva version
-					lblEstado.setText("Hay una nueva versión: Apeiron "+linea);
-					escribir("Puede obtener la actualización de: http://apeiron.sourceforge.net\n");
-					btnActualizar.setEnabled(true);
-					setVisible(true);
-				}else{
-					lblEstado.setText("Usted tiene la última versión");
-				}
-			}
-			br.close();
-			
-		} catch (MalformedURLException e) {
-			escribir("Falló\n"+e+"\n");
-			e.printStackTrace();
-		} catch (IOException e) {
-			escribir("Falló\n"+e+"\n");
-			e.printStackTrace();
-		}
-		btnReintentar.setEnabled(true);
-	}
+        });
+
+        btnActualizar.setEnabled(false);
+
+        lblEstado = new JLabel("");
+        texto = new StringBuffer();
+        txtTexto = new JTextArea();
+        txtTexto.setEditable(false);
+
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        panel.add(btnReintentar);
+        panel.add(btnActualizar);
+
+        getContentPane().add(panel, "North");
+        getContentPane().add(new JScrollPane(txtTexto));
+        getContentPane().add(lblEstado, "South");
+
+        setSize(380, 200);
+
+        empezar();
+    }
+
+    public void mostrar(String msg) {
+        lblEstado.setText(msg);
+    }
+
+    protected void empezar() {
+        new Thread(this).start();
+    }
+
+    protected synchronized void escribir(String s) {
+        texto.append(s);
+        txtTexto.setText(texto + "");
+        txtTexto.setSelectionStart(texto.length());
+    }
+
+    public void run() {
+        btnReintentar.setEnabled(false);
+        try {
+            lblEstado.setText("Conectando con servidor...");
+            escribir("\nConectando con servidor...");
+            URL url = new URL("http://apeiron.sourceforge.net/version.php");
+            lblEstado.setText("Obteniendo información de versión...");
+            escribir("Ok\n");
+            escribir("Obteniendo información sobre última versión...");
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
+            String linea = br.readLine();
+            escribir("Ok\n");
+
+            if (linea != null) {
+                escribir("Versión mas reciente: " + linea + "\n");
+                if (Principal.version < Double.parseDouble(linea)) { // Hay nueva version
+                    lblEstado.setText("Hay una nueva versión: Apeiron " + linea);
+                    escribir("Puede obtener la actualización de: http://apeiron.sourceforge.net\n");
+                    btnActualizar.setEnabled(true);
+                    setVisible(true);
+                } else {
+                    lblEstado.setText("Usted tiene la última versión");
+                }
+            }
+            br.close();
+
+        } catch (MalformedURLException e) {
+            escribir("Falló\n" + e + "\n");
+            e.printStackTrace();
+        } catch (IOException e) {
+            escribir("Falló\n" + e + "\n");
+            e.printStackTrace();
+        }
+        btnReintentar.setEnabled(true);
+    }
 }

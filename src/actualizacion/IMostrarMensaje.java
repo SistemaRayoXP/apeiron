@@ -1,5 +1,5 @@
 package actualizacion;
 
 public interface IMostrarMensaje {
-	void mostrar(String msg);
+    void mostrar(String msg);
 }

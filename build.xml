@@ -1,83 +1,83 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project basedir="." default="createRelease" name="apeiron">
-	<property environment="env" />
-	<property name="debuglevel" value="source,lines,vars" />
-	<property name="target" value="1.7" />
-	<property name="source" value="1.7" />
-	<property name="launch4j.dir" location="C:/Program Files (x86)/Launch4j" />
-	
-	<path id="apeiron.classpath">
-		<pathelement location="build" />
-		<pathelement location="lib/commons-digester-1.8.jar" />
-		<pathelement location="lib/commons-collections-3.2.1.jar" />
-		<pathelement location="lib/commons-logging-1.1.1.jar" />
-		<pathelement location="lib/commons-beanutils.jar" />
-		<pathelement location="lib/itext-1.3.1.jar" />
-		<pathelement location="lib/poi-3.0.1-FINAL-20070705.jar" />
-		<pathelement location="lib/jasperreports-3.0.0.jar" />
-		<pathelement location="lib/jRegistryKey.jar" />
-	</path>
+    <property environment="env" />
+    <property name="debuglevel" value="source,lines,vars" />
+    <property name="target" value="1.7" />
+    <property name="source" value="1.7" />
+    <property name="launch4j.dir" location="C:/Program Files (x86)/Launch4j" />
+    
+    <path id="apeiron.classpath">
+        <pathelement location="build" />
+        <pathelement location="lib/commons-digester-1.8.jar" />
+        <pathelement location="lib/commons-collections-3.2.1.jar" />
+        <pathelement location="lib/commons-logging-1.1.1.jar" />
+        <pathelement location="lib/commons-beanutils.jar" />
+        <pathelement location="lib/itext-1.3.1.jar" />
+        <pathelement location="lib/poi-3.0.1-FINAL-20070705.jar" />
+        <pathelement location="lib/jasperreports-3.0.0.jar" />
+        <pathelement location="lib/jRegistryKey.jar" />
+    </path>
 
-	<taskdef name="nsis" classname="net.sf.nsisant.Task">
-		<classpath>
-			<fileset dir="lib">
-				<include name="**/*.jar" />
-			</fileset>
-		</classpath>
-	</taskdef>
-	
-	<taskdef name="launch4j"
-	    classname="net.sf.launch4j.ant.Launch4jTask"
-	    classpath="${launch4j.dir}/launch4j.jar
-	        :${launch4j.dir}/lib/xstream.jar" />
+    <taskdef name="nsis" classname="net.sf.nsisant.Task">
+        <classpath>
+            <fileset dir="lib">
+                <include name="**/*.jar" />
+            </fileset>
+        </classpath>
+    </taskdef>
+    
+    <taskdef name="launch4j"
+        classname="net.sf.launch4j.ant.Launch4jTask"
+        classpath="${launch4j.dir}/launch4j.jar
+            :${launch4j.dir}/lib/xstream.jar" />
 
-	<taskdef name="jrc" classname="net.sf.jasperreports.ant.JRAntCompileTask">
-		<classpath>
-			<fileset dir="lib">
-				<include name="**/*.jar" />
-			</fileset>
-		</classpath>
-	</taskdef>
-	
-	<target name="clean">
-		<delete dir="build" />
-	</target>
+    <taskdef name="jrc" classname="net.sf.jasperreports.ant.JRAntCompileTask">
+        <classpath>
+            <fileset dir="lib">
+                <include name="**/*.jar" />
+            </fileset>
+        </classpath>
+    </taskdef>
+    
+    <target name="clean">
+        <delete dir="build" />
+    </target>
 
-	<target name="compileReports">
-		<jrc srcdir="src/jasperReports" destdir="src/jasperReports" includes="*.jrxml" />
-	</target>
-	
-	<target name="copyFiles" depends="compileReports">
-		<mkdir dir="build" />
-		<copy includeemptydirs="false" todir="build">
-			<fileset dir="src" excludes="**/*.launch, **/*.java" />
-		</copy>
-	</target>
+    <target name="compileReports">
+        <jrc srcdir="src/jasperReports" destdir="src/jasperReports" includes="*.jrxml" />
+    </target>
+    
+    <target name="copyFiles" depends="compileReports">
+        <mkdir dir="build" />
+        <copy includeemptydirs="false" todir="build">
+            <fileset dir="src" excludes="**/*.launch, **/*.java" />
+        </copy>
+    </target>
 
-	<target name="build" depends="copyFiles">
-		<echo message="${ant.project.name}: ${ant.file}" />
-		<javac debug="true" debuglevel="${debuglevel}" destdir="build" source="${source}" target="${target}">
-			<src path="src" />
-			<classpath refid="apeiron.classpath" />
-		</javac>
-	</target>
-	
-	<target name="actualizarCatalogos">
-		<java fork="true" failonerror="yes" classname="util.GeneradorCatalogo" classpathref="apeiron.classpath"/>
-		<copy includeemptydirs="false" todir="build">
-			<fileset dir="src" includes="**/*.dat"/>
-		</copy>
-	</target>
+    <target name="build" depends="copyFiles">
+        <echo message="${ant.project.name}: ${ant.file}" />
+        <javac debug="true" debuglevel="${debuglevel}" destdir="build" source="${source}" target="${target}">
+            <src path="src" />
+            <classpath refid="apeiron.classpath" />
+        </javac>
+    </target>
+    
+    <target name="actualizarCatalogos">
+        <java fork="true" failonerror="yes" classname="util.GeneradorCatalogo" classpathref="apeiron.classpath"/>
+        <copy includeemptydirs="false" todir="build">
+            <fileset dir="src" includes="**/*.dat"/>
+        </copy>
+    </target>
 
-	<target name="jar" depends="clean, build, actualizarCatalogos">
-		<jar basedir="build" destfile="release/bin/apeiron.jar">
-			<manifest>
-				<attribute name="Main-Class" value="gui.Principal" />
-			</manifest>
-		</jar>
-	</target>
-	
-	<target name="run_jar" depends="clean, build, actualizarCatalogos">
+    <target name="jar" depends="clean, build, actualizarCatalogos">
+        <jar basedir="build" destfile="release/bin/apeiron.jar">
+            <manifest>
+                <attribute name="Main-Class" value="gui.Principal" />
+            </manifest>
+        </jar>
+    </target>
+    
+    <target name="run_jar" depends="clean, build, actualizarCatalogos">
         <jar destfile="release/installer/apeiron.jar" filesetmanifest="mergewithoutmain">
             <manifest>
                 <attribute name="Main-Class" value="gui.Principal"/>
@@ -94,19 +94,19 @@
             <zipfileset excludes="META-INF/*.SF" src="lib/jRegistryKey.jar"/>
         </jar>
     </target>
-	
-	<target name="zip_file" depends="clean, build, actualizarCatalogos">
-		<zip basedir="release/bin" destfile="release/installer/apeiron.zip" includes="**/*.jar,**/*.dll,**/*.bat" />
-	</target>
-	
-	<target name="createStandAlone">
-		<launch4j configFile="release/launch4j-standalone.xml" />
-	</target>
-	
-	<!--
-	<target name="createInstaller">
-			<nsis script="release/makeApeironInstaller.nsi" />	
-	</target>-->
-	
-	<target name="createRelease" depends="jar, run_jar, zip_file, createStandAlone"/>
+    
+    <target name="zip_file" depends="clean, build, actualizarCatalogos">
+        <zip basedir="release/bin" destfile="release/installer/apeiron.zip" includes="**/*.jar,**/*.dll,**/*.bat" />
+    </target>
+    
+    <target name="createStandAlone">
+        <launch4j configFile="release/launch4j-standalone.xml" />
+    </target>
+    
+    <!--
+    <target name="createInstaller">
+            <nsis script="release/makeApeironInstaller.nsi" />	
+    </target>-->
+    
+    <target name="createRelease" depends="jar, run_jar, zip_file, createStandAlone"/>
 </project>
