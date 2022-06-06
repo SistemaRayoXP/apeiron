@@ -45,7 +45,7 @@ public class ObtenPorClave extends JInternalFrame {
         if (sb.length() > 0)
             claves.add(sb.toString().toUpperCase());
 
-        if (claves.size() > 0)
+        if (!claves.isEmpty())
             return claves;
 
         return null;
@@ -98,6 +98,6 @@ public class ObtenPorClave extends JInternalFrame {
 
         getContentPane().add(panel, "Center");
         getContentPane().add(lblEstado, "South");
-        setSize(370, 120);
+        setSize(370, 180);
     }
 }

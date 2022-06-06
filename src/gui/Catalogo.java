@@ -151,7 +151,7 @@ public class Catalogo extends JInternalFrame {
         getContentPane().add(sp, BorderLayout.CENTER);
         getContentPane().add(panelSur, BorderLayout.SOUTH);
         getContentPane().add(panelNorte, BorderLayout.NORTH);
-        setSize(600, 450);
+        setSize(720, 480);
 
     }
 

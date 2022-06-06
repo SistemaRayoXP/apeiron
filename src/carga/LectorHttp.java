@@ -45,6 +45,9 @@ public class LectorHttp extends Thread {
 
     protected void inicializarProxy() {
         synchronized (lock) {
+            if (!System.getProperty("os.name").startsWith("Windows")) {
+				disableProxyResolution = true;
+			}
             if (!disableProxyResolution) {
                 try {
                     if (System.getProperty("http.proxyHost") == null) {

@@ -41,7 +41,7 @@ public class Principal extends JFrame implements CatalogoListener {
     }
 
     public Principal() {
-        super("Apeiron " + version + "   [http://apeiron.sourceforge.net]");
+        super("Apeiron " + version);
 
         Splash sp = new Splash();
         datos = new AdDatos();
